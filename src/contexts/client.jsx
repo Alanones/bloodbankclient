@@ -47,7 +47,7 @@ const ClientProvider = ({ children }) => {
   }, [bankId]);
 
   useEffect(() => {
-    if (user) {
+    if (user || loadUpdatedRequests) {
       getAllRequests();
     }
   }, [user, loadUpdatedRequests]);
