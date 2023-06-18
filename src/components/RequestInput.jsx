@@ -28,10 +28,11 @@ const RequestInput = ({ open, handleClose }) => {
       const req = await res?.data;
       if (req) {
         toast("Request sent successfully", { type: "success" });
-        setLoadUpdatedRequests(true);
         setUnitsOpen(false);
       }
+      setLoadUpdatedRequests(true);
     } catch (error) {
+      setLoadUpdatedRequests(true);
       console.log(error);
       setUnitsOpen(false);
     }

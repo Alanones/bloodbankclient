@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getUserFromLocalStorage, removeUserFromLocalStorage } from "../utils/localStorage";
 import customFetch from "../utils/axios";
 import moment from "moment";
+import { AdUnitsOutlined } from "@mui/icons-material";
 
 const ClientContext = React.createContext();
 
@@ -41,10 +42,10 @@ const ClientProvider = ({ children }) => {
   }, [user]);
 
   useEffect(() => {
-    if (bankId) {
+    if (bankId || loadUpdatedRequests) {
       getBankUnits(bankId);
     }
-  }, [bankId]);
+  }, [bankId, loadUpdatedRequests]);
 
   useEffect(() => {
     if (user || loadUpdatedRequests) {
