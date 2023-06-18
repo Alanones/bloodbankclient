@@ -6,7 +6,7 @@ import moment from "moment";
 const AdminContext = React.createContext();
 
 const AdminProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [admin, setAdmin] = useState(null);
   const [allUsers, setAllUsers] = useState(null);
   const [allBanks, setAllBanks] = useState(null);
   const [userRequests, setUserRequests] = useState({
@@ -19,27 +19,27 @@ const AdminProvider = ({ children }) => {
   useEffect(() => {
     const auth = getUserFromLocalStorage();
     if (auth?.user?.isAdmin) {
-      setUser(auth);
+      setAdmin(auth);
     }
   }, []);
 
   useEffect(() => {
-    if (user) {
+    if (admin) {
       getAllRequests();
     }
-  }, [user]);
+  }, [admin]);
 
   useEffect(() => {
-    if (user) {
+    if (admin) {
       getAllUsers();
     }
-  }, [user]);
+  }, [admin]);
 
   useEffect(() => {
-    if (user) {
+    if (admin) {
       getAllBanks();
     }
-  }, [user]);
+  }, [admin]);
 
   const getAllUsers = async () => {
     try {
@@ -84,7 +84,7 @@ const AdminProvider = ({ children }) => {
     }
   };
   return (
-    <AdminContext.Provider value={{ userRequests, setUserRequests, allUsers, allBanks }}>
+    <AdminContext.Provider value={{ userRequests, setAdmin, admin, setUserRequests, allUsers, allBanks }}>
       {children}
     </AdminContext.Provider>
   );

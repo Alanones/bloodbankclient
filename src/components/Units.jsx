@@ -12,14 +12,17 @@ const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
+  height: "100%",
+  width: "70%",
   transform: "translate(-50%, -50%)",
   bgcolor: "background.paper",
   border: "2px solid #000",
+  overflow: "scroll",
   boxShadow: 24,
   p: 4,
 };
 
-export default function TransitionsModal({ open, handleClose, setOpen }) {
+export default function TransitionsModal({ open, handleClose, setOpen, name }) {
   return (
     <div>
       <Modal
@@ -37,10 +40,14 @@ export default function TransitionsModal({ open, handleClose, setOpen }) {
       >
         <Fade in={open}>
           <Box sx={style}>
-            <Typography id="transition-modal-title" variant="h6" component="h2">
-              Available Units
+            <Typography style={{ marginBottom: "15px" }} id="transition-modal-title" variant="h6" component="h2">
+              {name}
               <Tooltip title="close">
-                <CancelIcon fontSize="large" sx={{ marginLeft: "530px", cursor: "pointer" }} onClick={handleClose} />
+                <CancelIcon
+                  fontSize="large"
+                  sx={{ position: "absolute", right: "30px", cursor: "pointer" }}
+                  onClick={handleClose}
+                />
               </Tooltip>
             </Typography>
             {/* Table with list units */}

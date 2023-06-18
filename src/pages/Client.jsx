@@ -19,18 +19,21 @@ export default function Client() {
   // if (!loadingUserRequests) {
   //   console.log(userRequests["all"]);
   // }
+  const style = {
+    marginLeft: "55px",
+  };
 
   return (
     <section className="section section-center">
       <Navbar />
-      <Box sx={{ flexGrow: 1, bgcolor: "background.paper", display: "flex" }}>
+      <Box sx={{ bgcolor: "background.paper", display: "flex" }}>
         <Tabs
           orientation="vertical"
-          variant="scrollable"
+          // variant="scrollable"
           value={value}
           onChange={handleChange}
           aria-label="Vertical tabs example"
-          sx={{ borderRight: 1, borderColor: "divider", width: "350px", maxWidth: "400px" }}
+          sx={{ borderRight: 1, borderColor: "divider", width: "250px", maxWidth: "300px" }}
         >
           <Tab className="text" label="All blood banks" {...a11yProps(0)} />
           <Tab className="text" label="Requests" {...a11yProps(1)} />
@@ -41,28 +44,28 @@ export default function Client() {
         <TabPanel value={value} index={0}>
           <Bank />
         </TabPanel>
-        <TabPanel value={value} index={1}>
+        <TabPanel style={style} value={value} index={1}>
           {!loadingUserRequests ? (
             <Requests type="all" data={userRequests} />
           ) : (
             <Skeleton variant="rectangular" width={410} height={118} />
           )}
         </TabPanel>
-        <TabPanel value={value} index={2}>
+        <TabPanel style={style} value={value} index={2}>
           {loadingUserRequests ? (
             <Skeleton variant="rectangular" width={410} height={118} />
           ) : (
             <Requests type="approved" data={userRequests} />
           )}
         </TabPanel>
-        <TabPanel value={value} index={3}>
+        <TabPanel style={style} value={value} index={3}>
           {loadingUserRequests ? (
             <Skeleton variant="rectangular" width={410} height={118} />
           ) : (
             <Requests type="pending" data={userRequests} />
           )}
         </TabPanel>
-        <TabPanel value={value} index={4}>
+        <TabPanel style={style} value={value} index={4}>
           {loadingUserRequests ? (
             <Skeleton variant="rectangular" width={410} height={118} />
           ) : (

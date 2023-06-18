@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import customFetch from "../utils/axios";
 
 const RequestInput = ({ open, handleClose }) => {
-  const { requestUnits, setRequestUnits, setUnitsOpen } = React.useContext(ClientContext);
+  const { requestUnits, setRequestUnits, setUnitsOpen, setLoadUpdatedRequests } = React.useContext(ClientContext);
   const [value, setValue] = React.useState(0);
 
   const sendRequest = async () => {
@@ -28,13 +28,11 @@ const RequestInput = ({ open, handleClose }) => {
       const req = await res?.data;
       if (req) {
         toast("Request sent successfully", { type: "success" });
-        console.log(req);
-        setRequestUnits(false);
+        setLoadUpdatedRequests(true);
         setUnitsOpen(false);
       }
     } catch (error) {
       console.log(error);
-      setRequestUnits(false);
       setUnitsOpen(false);
     }
   };

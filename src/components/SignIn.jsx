@@ -7,9 +7,11 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { addUserToLocalStorage } from "../utils/localStorage";
 import { ClientContext } from "../contexts/client";
+import { AdminContext } from "../contexts/admin";
 
 const SignIn = () => {
-  const { setBanks } = useContext(ClientContext);
+  const { setUser } = useContext(ClientContext);
+  const { setAdmin } = useContext(AdminContext);
   const navigate = useNavigate();
 
   const submitForm = async (values, setSubmitting) => {
@@ -20,11 +22,13 @@ const SignIn = () => {
       const { user } = await res?.data;
       addUserToLocalStorage(res?.data);
       if (user && !user?.isAdmin) {
+        await setUser(res.data);
         navigate("/client");
         toast("Login Successfull!", {
           type: "success",
         });
       } else if (user && user?.isAdmin) {
+        await setAdmin(res.data);
         navigate("/admin");
         toast("Login Successfull!", {
           type: "success",

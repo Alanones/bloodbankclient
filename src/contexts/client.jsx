@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getUserFromLocalStorage } from "../utils/localStorage";
+import { getUserFromLocalStorage, removeUserFromLocalStorage } from "../utils/localStorage";
 import customFetch from "../utils/axios";
 import moment from "moment";
 
@@ -14,6 +14,7 @@ const ClientProvider = ({ children }) => {
   const [units, setUnits] = useState([]);
   const [bankId, setBankId] = useState("");
   const [loadingUnits, setLoadingUnits] = useState(false);
+  const [loadUpdatedRequests, setLoadUpdatedRequests] = useState(false);
   const [loadingUserRequests, setLoadingUserRequests] = useState(true);
   const [requestUnits, setRequestUnits] = useState({
     blood: "",
@@ -49,7 +50,7 @@ const ClientProvider = ({ children }) => {
     if (user) {
       getAllRequests();
     }
-  }, [user]);
+  }, [user, loadUpdatedRequests]);
 
   const getBanks = async () => {
     setLoadingUnits(true);
@@ -109,6 +110,7 @@ const ClientProvider = ({ children }) => {
   };
 
   const logout = () => {
+    removeUserFromLocalStorage();
     setUser(null);
   };
   return (
@@ -135,6 +137,7 @@ const ClientProvider = ({ children }) => {
         setUserRequests,
         loadingUserRequests,
         setLoadingUserRequests,
+        setLoadUpdatedRequests,
         logout,
       }}
     >

@@ -1,9 +1,11 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { ClientContext } from "../contexts/client";
+import { AdminContext } from "../contexts/admin";
 import { useNavigate } from "react-router-dom";
 import AddBlood from "./Admin/Charts/AddBlood";
 import AddBank from "./Admin/Charts/AddBank";
+import { useEffect } from "react";
 
 const Navbar = () => {
   const [openAddBloodModal, setOpenAddBloodModal] = React.useState(false);
@@ -14,14 +16,27 @@ const Navbar = () => {
   const handleCloseBank = () => setOpenAddBankModal(false);
   const navigate = useNavigate();
   const { user, logout } = useContext(ClientContext);
+  const { admin } = useContext(AdminContext);
+  const [name, setName] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setIsAdmin(false);
+      setName(user?.user?.name.toUpperCase());
+    } else if (admin) {
+      setIsAdmin(true);
+      setName(admin?.user?.name.toUpperCase());
+    }
+  }, [user, admin]);
 
   return (
     <Wrapper>
       <h4>
-        welcome, <strong>{user?.user?.name.toUpperCase()}</strong>
+        welcome, <strong>{name && name}</strong>
       </h4>
       <span>
-        {user?.user.isAdmin ? (
+        {isAdmin ? (
           <>
             <button onClick={handleOpenBank}>Add New Region</button>
             <button onClick={handleOpen}>Add New Blood Unit</button>

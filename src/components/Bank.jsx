@@ -12,6 +12,7 @@ import { ClientContext } from "../contexts/client";
 export default function MediaCard() {
   const { banks, open, setUnitsOpen, getBankUnits, setBankId, setRequestUnits, requestUnits } =
     React.useContext(ClientContext);
+  const [bankName, setBankName] = React.useState("");
 
   const handleOpen = () => setUnitsOpen(true);
   const handleClose = () => setUnitsOpen(false);
@@ -29,26 +30,38 @@ export default function MediaCard() {
     );
   }
   return (
-    <Box sx={{ display: "flex", gap: "1.2rem", flexWrap: "wrap" }}>
+    <Box sx={{ display: "flex", gap: "2.2rem", flexWrap: "wrap", justifyContent: "center", alignItems: "center" }}>
       {banks?.map((bank, index) => {
         return (
-          <Card sx={{ maxWidth: 345 }} key={index}>
-            <CardMedia sx={{ height: 140 }} image="https://picsum.photos/200" title="green iguana" />
+          <Card sx={{ maxWidth: 300 }} key={index}>
+            <CardMedia
+              sx={{ height: 140 }}
+              image="https://images.pexels.com/photos/247786/pexels-photo-247786.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+              title="green iguana"
+            />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
                 {bank?.name}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Odio ex est nisi debitis doloremque minima.
+                {bank?.name} is a regional bank serving hospitals within {bank?.name.split(" ")[0]} and neighboring
+                areas. You can order blood units today.
               </Typography>
             </CardContent>
             <CardActions>
               {/* Modal to display all units */}
-              <Unit open={open} setOpen={setUnitsOpen} handleOpen={handleOpen} handleClose={handleClose} />
+              <Unit
+                name={bankName}
+                open={open}
+                setOpen={setUnitsOpen}
+                handleOpen={handleOpen}
+                handleClose={handleClose}
+              />
               <Button
                 size="small"
                 onClick={() => {
                   handleOpen();
+                  setBankName(bank?.name);
                   setRequestUnits((prev) => {
                     return { ...prev, bank: bank._id };
                   });
