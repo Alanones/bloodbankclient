@@ -72,15 +72,16 @@ const ClientProvider = ({ children }) => {
       const bankUnits = await res?.data;
       // if (!bankUnits) return setUnits([]);
       const today = new Date();
-      setUnits(
-        bankUnits
-          .sort(function (a, b) {
-            return a.expiry.localeCompare(b.expiry);
-          })
-          .filter((unit) => {
-            return moment(unit.expiry).isAfter(today);
-          })
-      );
+      setUnits(bankUnits);
+      // setUnits(
+      //   bankUnits
+      //     .filter((unit) => {
+      //       return moment(unit.expiry).isAfter(today);
+      //     })
+      //     .sort(function (a, b) {
+      //       return a.expiry.localeCompare(b.expiry);
+      //     })
+      // );
     } catch (error) {
       console.log(error);
     }
