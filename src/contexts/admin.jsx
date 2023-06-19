@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getUserFromLocalStorage } from "../utils/localStorage";
 import customFetch from "../utils/axios";
-import moment from "moment";
 
 const AdminContext = React.createContext();
 
@@ -9,6 +8,8 @@ const AdminProvider = ({ children }) => {
   const [admin, setAdmin] = useState(null);
   const [allUsers, setAllUsers] = useState(null);
   const [allBanks, setAllBanks] = useState(null);
+  const [userCrud, setUserCrud] = useState(false);
+  const [bankCrud, setBankCrud] = useState(false);
   const [userRequests, setUserRequests] = useState({
     all: [],
     pending: [],
@@ -33,13 +34,13 @@ const AdminProvider = ({ children }) => {
     if (admin) {
       getAllUsers();
     }
-  }, [admin]);
+  }, [admin, userCrud]);
 
   useEffect(() => {
-    if (admin) {
+    if (admin || bankCrud) {
       getAllBanks();
     }
-  }, [admin]);
+  }, [admin, bankCrud]);
 
   const getAllUsers = async () => {
     try {
@@ -47,8 +48,10 @@ const AdminProvider = ({ children }) => {
       const users = await res?.data;
       if (users) {
         setAllUsers(users);
+        setUserCrud(false);
       }
     } catch (e) {
+      setUserCrud(false);
       console.log(e);
     }
   };
@@ -58,8 +61,10 @@ const AdminProvider = ({ children }) => {
       const banks = await res?.data;
       if (banks) {
         setAllBanks(banks);
+        setBankCrud(false);
       }
     } catch (e) {
+      setBankCrud(false);
       console.log(e);
     }
   };
@@ -84,7 +89,9 @@ const AdminProvider = ({ children }) => {
     }
   };
   return (
-    <AdminContext.Provider value={{ userRequests, setAdmin, admin, setUserRequests, allUsers, allBanks }}>
+    <AdminContext.Provider
+      value={{ userRequests, setAdmin, admin, setUserRequests, allUsers, allBanks, setUserCrud, setBankCrud }}
+    >
       {children}
     </AdminContext.Provider>
   );

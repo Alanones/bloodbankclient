@@ -17,7 +17,7 @@ export const options = {
 export default function Pie3D() {
   return (
     <div>
-      <Chart chartType="PieChart" data={data} options={options} width={"100%"} height={"400px"} />;
+      <Chart chartType="PieChart" data={data} options={options} width={"100%"} height={"400px"} />
     </div>
   );
 }

@@ -1,15 +1,62 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import Tooltip from "@mui/material/Tooltip";
 import { AdminContext } from "../../contexts/admin";
+import customFetch from "../../utils/axios";
+import { toast } from "react-toastify";
+import UserDelete from "./DeleteDialog";
 
 const Clients = () => {
-  const { allUsers } = useContext(AdminContext);
+  const { allUsers, setUserCrud } = useContext(AdminContext);
+  const [open, setOpen] = useState();
+  const [id, setId] = useState(null);
+  const [name, setName] = useState(null);
+  const [loading, setLoading] = useState(false);
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const deleteUser = async (id) => {
+    try {
+      setLoading(true);
+      const res = await customFetch.delete(`/delete-user/${id}`);
+      if (res?.data) {
+        setUserCrud(true);
+        toast(`${name} deleted successfully`, { type: "success" });
+        setLoading(false);
+        setOpen(false);
+      } else {
+        toast(`${name} could not be deleted`, { type: "error" });
+        setOpen(false);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+      toast("Something went wrong", { type: "error" });
+      setOpen(false);
+      setLoading(false);
+    }
+  };
   return (
     <Wrapper>
+      {/* Delete user modal */}
+      <UserDelete
+        open={open}
+        name={name}
+        item="User"
+        loading={loading}
+        handleClose={handleClose}
+        deleteUser={() => {
+          deleteUser(id);
+        }}
+      />
       <div className="users">
         {allUsers?.map((user, index) => {
           const { location, name } = user;
@@ -18,7 +65,9 @@ const Clients = () => {
             <article key={index}>
               {/* <img src={`https://ui-avatars.com/api/?name=${first}+${last}`} alt={name} /> */}
               <div>
-                <h4>{name}</h4>
+                <Link to={`users/${user._id}`} target="_blank">
+                  <h4 style={{ cursor: "pointer" }}>{name}</h4>
+                </Link>
                 <p>{location}</p>
                 <span className="title">
                   <Tooltip title="edit">
@@ -30,7 +79,14 @@ const Clients = () => {
                     />
                   </Tooltip>
                   <Tooltip title="delete">
-                    <DeleteOutlineOutlinedIcon color="error" />
+                    <DeleteOutlineOutlinedIcon
+                      color="error"
+                      onClick={() => {
+                        handleClickOpen();
+                        setId(user._id);
+                        setName(user.name);
+                      }}
+                    />
                   </Tooltip>
                 </span>
               </div>

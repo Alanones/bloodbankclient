@@ -32,7 +32,7 @@ const ClientProvider = ({ children }) => {
 
   useEffect(() => {
     const auth = getUserFromLocalStorage();
-    if (auth) {
+    if (auth && !auth?.user?.isAdmin) {
       setUser(auth);
     }
   }, []);
@@ -42,13 +42,13 @@ const ClientProvider = ({ children }) => {
   }, [user]);
 
   useEffect(() => {
-    if (bankId || loadUpdatedRequests) {
+    if (bankId) {
       getBankUnits(bankId);
     }
   }, [bankId, loadUpdatedRequests]);
 
   useEffect(() => {
-    if (user || loadUpdatedRequests) {
+    if (user) {
       getAllRequests();
     }
   }, [user, loadUpdatedRequests]);
@@ -71,18 +71,8 @@ const ClientProvider = ({ children }) => {
     try {
       const res = await customFetch.get(`/bank-blood/${id}`);
       const bankUnits = await res?.data;
-      // if (!bankUnits) return setUnits([]);
       const today = new Date();
       setUnits(bankUnits);
-      // setUnits(
-      //   bankUnits
-      //     .filter((unit) => {
-      //       return moment(unit.expiry).isAfter(today);
-      //     })
-      //     .sort(function (a, b) {
-      //       return a.expiry.localeCompare(b.expiry);
-      //     })
-      // );
     } catch (error) {
       console.log(error);
     }

@@ -1,43 +1,79 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import Tooltip from "@mui/material/Tooltip";
-import { Button } from "@mui/material";
 import { useContext } from "react";
-import { ClientContext } from "../../contexts/client";
 import { AdminContext } from "../../contexts/admin";
-import BankModal from "./BankModal";
-import { useState } from "react";
+import BankDelete from "./DeleteDialog";
+import { toast } from "react-toastify";
+import customFetch from "../../utils/axios";
+import EditBank from "./EditBank";
 
 const Regions = () => {
-  const { openBankModal, setOpenBankModal } = useContext(ClientContext);
-  const { allBanks } = useContext(AdminContext);
-  const [data, setData] = useState({
-    title: "",
-    blood: "",
-  });
+  const { allBanks, setBankCrud } = useContext(AdminContext);
+  const [open, setOpen] = useState(false);
+  const [id, setId] = useState(null);
+  const [name, setName] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [bank, setBank] = useState({ id: "", name: "", address: "" });
 
-  const clients = [
-    {
-      name: "Nairobi Blood bank",
-      address: "Nairobi center",
-      avatar_url: "https://ui-avatars.com/api/?name=Nate+Rwangi",
-    },
-    {
-      name: "Mombasa blood bank",
-      address: "Mombasa",
-      avatar_url: "https://ui-avatars.com/api/?name=Moreene+Rwangi",
-    },
-    {
-      name: "Kisumu Blood bank",
-      address: "Kisumu",
-      avatar_url: "https://ui-avatars.com/api/?name=Kridah+Rwangi",
-    },
-  ];
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const deleteBank = async (id) => {
+    try {
+      setLoading(true);
+      const res = await customFetch.delete(`/banks/${id}`);
+      if (res?.data) {
+        setBankCrud(true);
+        toast(`${name} deleted successfully`, { type: "success" });
+        setLoading(false);
+        setOpen(false);
+      } else {
+        toast(`${name} could not be deleted`, { type: "error" });
+        setOpen(false);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+      toast("Something went wrong", { type: "error" });
+      setOpen(false);
+      setLoading(false);
+    }
+  };
 
   return (
     <Wrapper>
+      {/* Delete bank modal */}
+      <BankDelete
+        open={open}
+        name={name}
+        item="Bank"
+        loading={loading}
+        handleClose={handleClose}
+        deleteUser={() => {
+          deleteBank(id);
+        }}
+      />
+
+      {/* Edit bank Modal */}
+      <EditBank
+        open={openEdit}
+        id={bank.id}
+        bankName={bank.name}
+        bankAddress={bank.address}
+        handleClose={() => {
+          setOpenEdit(false);
+          setBank({ id: "", name: "", address: "" });
+        }}
+      />
       <div className="users">
         {allBanks?.map((bank, index) => {
           const { address, name } = bank;
@@ -45,15 +81,9 @@ const Regions = () => {
             <article key={index}>
               {/* <img src={img} alt={name} /> */}
               <div>
-                <h4
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    setData({ title: name, blood: "Many blood types" });
-                    setOpenBankModal(true);
-                  }}
-                >
-                  {name}
-                </h4>
+                <Link to={`banks/${bank._id}`} target="_blank">
+                  <h4 style={{ cursor: "pointer" }}>{name}</h4>
+                </Link>
                 <p>{address}</p>
 
                 <span className="title">
@@ -61,24 +91,25 @@ const Regions = () => {
                     <ModeEditOutlineOutlinedIcon
                       color="success"
                       onClick={() => {
-                        console.log(name);
-                        console.log(bank._id);
+                        setOpenEdit(true);
+                        setBank({ name, address, id: bank._id });
                       }}
                     />
                   </Tooltip>
                   <Tooltip title="delete">
-                    <DeleteOutlineOutlinedIcon color="error" />
+                    <DeleteOutlineOutlinedIcon
+                      color="error"
+                      onClick={() => {
+                        handleClickOpen();
+                        setId(bank._id);
+                        setName(name);
+                      }}
+                    />
                   </Tooltip>
                 </span>
               </div>
               {/* Modal to show info for each bank */}
-              <BankModal
-                data={data}
-                open={openBankModal}
-                handleClose={() => {
-                  setOpenBankModal(false);
-                }}
-              />
+
               {/* Modal to show info for each bank */}
             </article>
           );

@@ -10,16 +10,11 @@ import Unit from "../components/Units";
 import { ClientContext } from "../contexts/client";
 
 export default function MediaCard() {
-  const { banks, open, setUnitsOpen, getBankUnits, setBankId, setRequestUnits, requestUnits } =
-    React.useContext(ClientContext);
+  const { banks, open, setUnitsOpen, setBankId, setRequestUnits, requestUnits } = React.useContext(ClientContext);
   const [bankName, setBankName] = React.useState("");
 
   const handleOpen = () => setUnitsOpen(true);
   const handleClose = () => setUnitsOpen(false);
-
-  // React.useEffect(()=>{
-  //   getBankUnits()
-  // },[])
 
   if (!banks.length) {
     return (

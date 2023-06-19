@@ -33,7 +33,7 @@ export const options = {
 export default function Horizontal() {
   return (
     <div>
-      <Chart chartType="Bar" width="100%" height="400px" data={data} options={options} />;
+      <Chart chartType="Bar" width="100%" height="400px" data={data} options={options} />
     </div>
   );
 }
